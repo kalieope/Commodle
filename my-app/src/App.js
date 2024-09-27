@@ -1,45 +1,25 @@
-import { useState } from 'react';
-import { sculptureList } from './data.js';
+import React, { useState } from 'react';
+import Popup from 'reactjs-popup';
 
-export default function Gallery() {
-  const [index, setIndex] = useState(0);
-  const [showMore, setShowMore] = useState(false);
-  const hasNext = index < sculptureList.length - 1;
 
-  function handleNextClick() {
-    if (hasNext) {
-      setIndex(index + 1);
-    } else {
-      setIndex(0);
-    }
-  }
+const PromptPopup = () => {
+  const [name, setName] = useState('');
 
-  function handleMoreClick() {
-    setShowMore(!showMore);
-  }
 
-  let sculpture = sculptureList[index];
   return (
-    <>
-      <button onClick={handleNextClick}>
-        Next
-      </button>
-      <h2>
-        <i>{sculpture.name} </i>
-        by {sculpture.artist}
-      </h2>
-      <h3>
-        ({index + 1} of {sculptureList.length})
-      </h3>
-      <button onClick={handleMoreClick}>
-        {showMore ? 'Hide' : 'Show'} details
-      </button>
-      {showMore && <p>{sculpture.description}</p>}
-      <img
-        src={sculpture.url}
-        alt={sculpture.alt}
-      />
-    </>
+    <Popup trigger={<button>Enter Name</button>} position="right center">
+      <div>
+        <label>Your Name:</label>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <p>You entered: {name}</p>
+      </div>
+    </Popup>
   );
-}
+};
 
+
+export default PromptPopup;
