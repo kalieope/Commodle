@@ -1,25 +1,29 @@
-import React, { useState } from 'react';
-import Popup from 'reactjs-popup';
+// App.js
+import { Link } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import LoginSignup from './Components/LoginSignup/LoginSignup.jsx';
+import HomePage from './HomePage';
+import AboutPage from './AboutPage';
 
 
-const PromptPopup = () => {
-  const [name, setName] = useState('');
-
-
+const App = () => {
   return (
-    <Popup trigger={<button>Enter Name</button>} position="right center">
+    <BrowserRouter>
+    <Routes>
+        <Route path="/" element={<LoginSignup />} />
+        <Route path="/home" element={<HomePage />} />
+        <Route path="/about" element={<AboutPage />} />
+      </Routes>
       <div>
-        <label>Your Name:</label>
-        <input
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-        <p>You entered: {name}</p>
+        <Link to="/">Login</Link>
+        <Link to="/home">Home</Link>
+        <Link to="/about">About</Link>
       </div>
-    </Popup>
+
+      {/* ... Routes component */}
+    </BrowserRouter>
   );
 };
 
-
-export default PromptPopup;
+export default App;
