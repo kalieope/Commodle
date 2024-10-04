@@ -1,4 +1,5 @@
 .container{
+    
   display: flex;
   flex-direction: column;
   margin: auto;
@@ -98,4 +99,24 @@
 .gray{
     background: #EAEAEA;
     color: #676767;
+}
+
+.take-input{
+    display: flex;
+    gap: 3px;
+    margin: auto;
+}
+
+.turn{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 220px;
+    height: 59px;
+    color: #fff;
+    background: #84D4FF;
+    border-radius: 50px;
+    font-size: 19px;
+    font-weight: 700;
+    cursor: pointer;
 }

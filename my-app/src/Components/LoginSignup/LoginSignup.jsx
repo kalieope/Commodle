@@ -8,6 +8,15 @@ import password_icon from "../Assets/password.png"
 const LoginSignup = () => {
 
     const [action,setAction] = useState("Login");
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    const handleSubmit = () => {
+        console.log("Name:", name);
+        console.log("Email:",email);
+        console.log("Password",password);
+    }
 
     return(
         <div className="container">
@@ -34,6 +43,9 @@ const LoginSignup = () => {
             <div className="submit-container">
                 <div className={action==="Login"?"submit gray":"submit"}onClick={()=>{setAction("Sign Up")}}>Sign Up</div>
                 <div className={action==="Sign Up"?"submit gray":"submit"} onClick={()=>{setAction("Login")}}>Login</div>
+            </div>
+            <div className="take-input">
+                <div className={action==="Submit"?"turn gray":"turn"}>Submit</div>
             </div>
         </div>
     )
