@@ -6,3 +6,9 @@ Kaleigh Powell
 Zachary Dulaney
 Colby Willman
 Jacob Yee
+
+
+
+
+open this for the web site: 
+http://localhost:3000/ 
