@@ -1,26 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import ReactMapGL from 'react-map-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
 
-const MapComponent = () => {
-  const [center, setCenter] = useState({ lat: 32.526352, lng: -92.643687 }); // Default center (e.g., New York)
+const Map = () => {
+  const [viewPort, setViewport] = useState({
+    latitude: 37.7577,
+    longitude: -122.4376,
+    zoom: 6,
+    width: "100vh",
+    height: "100vh",
+
+  });
+
+
 
   return (
-  <div className="map">
-    <LoadScript googleMapsApiKey="AIzaSyD2XWVThP5_5oarPrfZ6dCpQGzpmZ-Hl3s">
-      <GoogleMap
-        mapContainerStyle={{ height: '400px', width: '100%' }}
-        center={center}
-        zoom={800}
+    <div style={{ width: "100vh", height: "50vh"}}> 
+      <ReactMapGL
+      {...viewPort}
+      mapboxAccessToken='pk.eyJ1IjoiamFjb2J5ZWUiLCJhIjoiY20yM2cxeG9qMDViNzJxcHNrMDl0eDhrNSJ9.64obJH6vBfs70H6SL31XHw'
+      width='100%'
+      height='100%'
+      mapStyle={"mapbox://styles/mapbox/standard"}
+      transitionDuration="200"
       >
-        <Marker position={center} />
-      </GoogleMap>
-    </LoadScript>
-    <div className="button">
-    <button type="button">I am the Map Button</button>
-      </div>
+
+      </ReactMapGL>
     </div>
-    
   );
 };
 
-export default MapComponent;
+export default Map;
