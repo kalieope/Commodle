@@ -18,6 +18,29 @@ const Map = () => {
 
   const [selectedToilet, setSelectedToilet] = useState(null);
 
+  
+  const [userLocation, setUserLocation] = useState(null);
+
+  useEffect(() => {
+    // Get user's location
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const { latitude, longitude } = position.coords;
+        setUserLocation({ latitude, longitude });
+
+        // Move the map to the user's location
+        setViewport((prevViewport) => ({
+          ...prevViewport,
+          latitude,
+          longitude,
+          zoom: 18, // Adjust zoom level as needed
+        }));
+      });
+    } else {
+      console.error('Geolocation not available');
+    }
+
+  }, []);
   return (
     <div style={{ width: "100%", height: "75vh", zIndex: 999}}> 
       <ReactMapGL
