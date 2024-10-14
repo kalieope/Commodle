@@ -5,6 +5,7 @@ import ReactMapGL, { Marker, Popup } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import bathrooms from './markerTest.json';
 import toilet_icon from './toilet.png';
+import './HomePage.css'
 
 const Map = () => {
 
