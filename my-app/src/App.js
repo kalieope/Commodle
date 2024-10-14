@@ -2,11 +2,11 @@
 import { Link } from 'react-router-dom';
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import LoginSignup from './Components/LoginSignup/LoginSignup.jsx';
-import HomePage from './HomePage.js';
-import AboutPage from './AboutPage.js';
-import FavoritesPage from  './FavoritesPage.js';
-import ReviewPage from './ReviewPage.js';
+import LoginSignup from './Pages/LoginSignup.jsx';
+import HomePage from './Pages/HomePage.js';
+import AboutPage from './Pages/AboutPage.js';
+import FavoritesPage from  './Pages/FavoritesPage.js';
+import ReviewPage from './Pages/ReviewPage.js';
 
 
 const App = () => {
