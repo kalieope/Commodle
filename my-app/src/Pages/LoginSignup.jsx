@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import axios from 'axios'
 import './LoginSignup.css'
 
 import user_icon from "../Components/Assets/person.png"
@@ -12,10 +13,21 @@ const LoginSignup = () => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         console.log("Name:", name);
         console.log("Email:", email);
         console.log("Password:", password);
+
+        try {
+            const response = await axios.post('http://localhost:8000/users/', {
+                name,
+                email,
+                password
+            });
+            console.log(response.data);
+        } catch (error) {
+            console.error("There was an error!", error);
+        }
     }
 
     return (
