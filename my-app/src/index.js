@@ -1,17 +1,57 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+// App.js
+import React from 'react';
+import { createRoot } from "react-dom/client";
+import { createBrowserRouter, RouterProvider, Route, Link, Outlet} from 'react-router-dom';
+import NavBar from './Components/Assets/NavBar.js';
+import AboutPage from './Pages/AboutPage.js';
+import FavoritesPage from './Pages/FavoritesPage.js';
+import Map from './Pages/HomePage.js';
+import LoginSignup from './Pages/LoginSignup.jsx';
+import ReviewPage from './Pages/ReviewPage.js';
+import AccountPage from './Pages/AccountPage.js';
+import "./Components/Assets/NavBar.css";
+
+
+const AppLayout = () => (
+  <>
+    <NavBar />
+    <Outlet />
+  </>
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+const router = createBrowserRouter([
+  {
+    element: <AppLayout />,
+    children: [
+      {
+        path: "/",
+        element:<Map />
+      },
+      {
+        path: "about",
+        element: <AboutPage />,
+      },
+      {
+        path: "favorites",
+        element: <FavoritesPage />,
+      },
+      {
+        path: "login/signup",
+        element: <LoginSignup />,
+      },
+      {
+        path: "reviews",
+        element: <ReviewPage />,
+      },
+      {
+        path: "account",
+        element: <AccountPage />,
+      },
+    ],
+  },
+]);
+
+createRoot(document.getElementById("root")).render(
+  <RouterProvider router={router} />
+);
