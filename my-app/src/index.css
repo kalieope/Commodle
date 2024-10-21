@@ -24,3 +24,12 @@ code {
   width: 100px;
   height:100px;
 }
+
+#geocoder-container {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  background-color: "white";
+}
