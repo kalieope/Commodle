@@ -14,7 +14,7 @@ const LoginSignup = () => {
     const [password, setPassword] = useState("");
 
     const handleSubmit = async () => {
-        console.log("Name:", name);
+        console.log("Username:", name);
         console.log("Email:", email);
         console.log("Password:", password);
 
@@ -42,7 +42,7 @@ const LoginSignup = () => {
                     <img src={user_icon} alt="" />
                     <input 
                         type="text" 
-                        placeholder="Name"
+                        placeholder="Username"
                         value={name} 
                         onChange={(e) => setName(e.target.value)} 
                     />           
