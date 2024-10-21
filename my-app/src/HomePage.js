@@ -44,14 +44,12 @@ const Map = () => {
       }
       });
     } else {
-      console.error('Geolocation not available');
+      console.log('Geolocation not available');
     }
 
 
   initializeGeocoder(mapRef);
-  }, [mapRef, viewPort, locationMarked]);
-
-
+  }, []);
 
 
 const initializeGeocoder = (mapRef) => {
@@ -68,10 +66,11 @@ const initializeGeocoder = (mapRef) => {
 
   const geocoderContainer = document.getElementById("geocoder-container").appendChild(geocoder.onAdd(mapRef.current.getMap()));
 
-  if (geocoderContainer) {
+  if (geocoderContainer && !geocoderContainer.hasChildNodes()) {
     // Container exists, append the geocoder to it
     geocoderContainer.appendChild(geocoder.onAdd(mapRef.current.getMap()));
     console.log("Geocoder successfully appended to container.");
+
   } else {
     // Container not found, log an error message
     console.error("Error: Geocoder container not found in the DOM.");
@@ -79,19 +78,31 @@ const initializeGeocoder = (mapRef) => {
   }
 
   geocoder.on("result", (e) => {
-    const { center } = e.result.geometry;
-    setViewport({
-      ...viewPort,
-      latitude: center[1],
-      longitude: center[0],
-      zoom: 18,
-    });
-
+    if (e.result && e.result.geometry && e.result.geometry.center) {
+      const { center } = e.result.geometry; // Extract center if it exists
+  
+      // Update the map's viewport to the center
+      setViewport((prevViewport) => ({
+        ...prevViewport,
+        latitude: center[1],  // Mapbox returns [lng, lat], so center[1] is latitude
+        longitude: center[0], // center[0] is longitude
+        zoom: 18,             // Set a suitable zoom level
+      }));
+    } else if (e.result && e.result.bbox) {
+      // Handle cases where no center is present but a bounding box (bbox) is available
+      const [minLng, minLat, maxLng, maxLat] = e.result.bbox;
+  
+      // Set the viewport to fit the bounding box
+      setViewport((prevViewport) => ({
+        ...prevViewport,
+        latitude: (minLat + maxLat) / 2, // Calculate the midpoint for latitude
+        longitude: (minLng + maxLng) / 2, // Calculate the midpoint for longitude
+        zoom: 12, // Adjust zoom as needed based on the result
+      }));
+    } else {
+      console.error("Error: Geocoder result does not contain a valid center or bbox.");
+    }
   });
-
-
-//this is a test
-
   }
   return (
 

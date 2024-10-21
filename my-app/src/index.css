@@ -32,4 +32,6 @@ code {
   transform: translateX(-50%);
   z-index: 1;
   background-color: "white";
+  width: 20px;  /* Adjust width as needed */
+  max-width: 100%;
 }
