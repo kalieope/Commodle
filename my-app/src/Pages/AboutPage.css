@@ -1,11 +1,55 @@
-.title{
-    display:flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.Devs{
+/* Existing styles */
+.title {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.Devs {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.Devs img {
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    margin: 10px;
+}
+
+.Devs h3, .Devs h6 {
+    text-align: center;
+    margin: 5px 0;
+}
+
+.AboutUs {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.AboutUs h1, .AboutUs h2 {
+    text-align: center;
+    color: #333;
+}
+
+.AboutUs p {
+    text-align: center;
+    color: #666;
+}
+
+/* New styles */
+.centered-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
 }
