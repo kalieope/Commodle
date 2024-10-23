@@ -81,3 +81,14 @@ code {
   border-radius: 10px;
   cursor: pointer;
 }
+
+#geocoder-container {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1;
+  background-color: "white";
+  width: 20px;  /* Adjust width as needed */
+  max-width: 100%;
+}
