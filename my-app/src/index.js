@@ -13,6 +13,7 @@ import AccountPage from './Pages/AccountPage.js';
 import { AuthProvider } from './AuthContext';
 import ProtectedRoute from './ProtectedRoute';
 import "./Components/Assets/NavBar.css";
+import Review from './Pages/LeaveReview.js';
 
 const AppLayout = () => (
   <>
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
       {
         path: "/account",
         element: <ProtectedRoute><AccountPage /></ProtectedRoute>,
+      },
+      {
+        path: "/leavereview",
+        element: <ProtectedRoute><Review /></ProtectedRoute>,
       },
     ],
   },

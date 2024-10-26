@@ -1,5 +1,6 @@
 // ReviewPage.js
 import React, { useState } from 'react';
+import { Axios } from "axios";
 
 const styles = {
   container: {
@@ -30,36 +31,6 @@ const styles = {
   reviewRating: {
     color: '#ff9900'
   },
-  form: {
-    marginTop: '20px'
-  },
-  formLabel: {
-    display: 'block',
-    marginBottom: '5px',
-    fontWeight: 'bold'
-  },
-  formInput: {
-    width: '100%',
-    padding: '8px',
-    marginBottom: '10px',
-    borderRadius: '4px',
-    border: '1px solid #ddd'
-  },
-  formTextarea: {
-    width: '100%',
-    padding: '8px',
-    marginBottom: '10px',
-    borderRadius: '4px',
-    border: '1px solid #ddd'
-  },
-  formButton: {
-    padding: '10px 20px',
-    backgroundColor: '#007bff',
-    color: '#fff',
-    border: 'none',
-    borderRadius: '4px',
-    cursor: 'pointer'
-  }
 };
 
 function ReviewPage() {
@@ -68,28 +39,9 @@ function ReviewPage() {
     { id: 2, author: 'Jane Smith', rating: 4, content: 'Good value for money.' },
   ]);
 
-  const [newReview, setNewReview] = useState({
-    author: '',
-    rating: 0,
-    content: ''
-  });
-
-  const handleInputChange = (event) => {
-    setNewReview({
-      ...newReview,
-      [event.target.name]: event.target.value
-    });
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    setReviews([...reviews, { ...newReview, id: Date.now() }]);
-    setNewReview({ author: '', rating: 0, content: '' });
-  };
-
   return (
     <div style={styles.container}>
-      <h2 style={styles.header}>Customer Reviews</h2>
+      <h2 style={styles.header}>Reviews</h2>
 
       <ul style={styles.reviewList}>
         {reviews.map(review => (
@@ -100,27 +52,6 @@ function ReviewPage() {
           </li>
         ))}
       </ul>
-
-      <h3 style={styles.header}>Add Your Review</h3>
-      <form onSubmit={handleSubmit} style={styles.form}>
-        <label style={styles.formLabel}>
-          Author:
-          <input type="text" name="author" value={newReview.author} onChange={handleInputChange} style={styles.formInput} />
-        </label>
-        <label style={styles.formLabel}>
-          Rating:
-          <select name="rating" value={newReview.rating} onChange={handleInputChange} style={styles.formInput}>
-            {[...Array(5).keys()].map(i => (
-              <option key={i + 1} value={i + 1}>{i + 1}</option>
-            ))}
-          </select>
-        </label>
-        <label style={styles.formLabel}>
-          Content:
-          <textarea name="content" value={newReview.content} onChange={handleInputChange} style={styles.formTextarea} />
-        </label>
-        <button type="submit" style={styles.formButton}>Submit</button>
-      </form>
     </div>
   );
 }

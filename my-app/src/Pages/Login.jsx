@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import './LoginSignup.css'
 import { useNavigate } from 'react-router-dom'
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { signInWithEmailAndPassword} from "firebase/auth";
 import { auth } from "../firebaseConfig";
 import { useAuth } from "../AuthContext";
 import email_icon from "../Components/Assets/email.png"
