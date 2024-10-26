@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import './LoginSignup.css'
-import { app } from "../firebaseConfig"
 import { useNavigate } from 'react-router-dom'
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-import user_icon from "../Components/Assets/person.png"
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebaseConfig";
+import { useAuth } from "../AuthContext";
 import email_icon from "../Components/Assets/email.png"
 import password_icon from "../Components/Assets/password.png"
 
@@ -12,21 +12,25 @@ const Login = () => {
     const [action, setAction] = useState("Login");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
+    const { login } = useAuth();
+    
     const navigate = useNavigate();
     const handleClick = () =>{
         navigate('/signup');
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault()
+        e.preventDefault();
         try{
-            signInWithEmailAndPassword(email,password)
-        } catch(err){
-            console.log(err)
+            await signInWithEmailAndPassword(auth, email, password);
+            login();
+            navigate('/');
+        } catch (err){
+            console.error(err);
         }
-    }
+    };
 
+   
     return (
         <div className="container">
             <div className="header">

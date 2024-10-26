@@ -1,8 +1,7 @@
-
-// App.js
+// index.js
 import React from 'react';
 import { createRoot } from "react-dom/client";
-import { createBrowserRouter, RouterProvider, Route, Link, Outlet} from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Route, Outlet } from 'react-router-dom';
 import NavBar from './Components/Assets/NavBar.js';
 import AboutPage from './Pages/AboutPage.js';
 import FavoritesPage from './Pages/FavoritesPage.js';
@@ -11,8 +10,9 @@ import Signup from './Pages/Signup.jsx';
 import Login from './Pages/Login.jsx';
 import ReviewPage from './Pages/ReviewPage.js';
 import AccountPage from './Pages/AccountPage.js';
+import { AuthProvider } from './AuthContext';
+import ProtectedRoute from './ProtectedRoute';
 import "./Components/Assets/NavBar.css";
-
 
 const AppLayout = () => (
   <>
@@ -27,7 +27,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Map />,
+        element: <ProtectedRoute><Map /></ProtectedRoute>,
       },
       {
         path: "/about",
@@ -35,7 +35,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/favorites",
-        element: <FavoritesPage />,
+        element: <ProtectedRoute><FavoritesPage /></ProtectedRoute>,
       },
       {
         path: "/login",
@@ -47,16 +47,18 @@ const router = createBrowserRouter([
       },
       {
         path: "/reviews",
-        element: <ReviewPage />,
+        element: <ProtectedRoute><ReviewPage /></ProtectedRoute>,
       },
       {
         path: "/account",
-        element: <AccountPage />,
+        element: <ProtectedRoute><AccountPage /></ProtectedRoute>,
       },
     ],
   },
 ]);
 
 createRoot(document.getElementById("root")).render(
-  <RouterProvider router={router} />
+  <AuthProvider>
+    <RouterProvider router={router} />
+  </AuthProvider>
 );

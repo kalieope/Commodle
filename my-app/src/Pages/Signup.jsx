@@ -1,36 +1,32 @@
-import React, { useState } from 'react'
-import axios from 'axios'
-import './LoginSignup.css'
-import { app } from "../firebaseConfig"
+import React, { useState } from 'react';
+import axios from 'axios';
+import './LoginSignup.css';
 import { useNavigate } from 'react-router-dom';
-import "./Login"
-import { createUserWithEmailAndPassword } from "firebase/auth";
-
-import user_icon from "../Components/Assets/person.png"
-import email_icon from "../Components/Assets/email.png"
-import password_icon from "../Components/Assets/password.png"
-
-    
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebaseConfig';
+import email_icon from '../Components/Assets/email.png';
+import password_icon from '../Components/Assets/password.png';
 
 const Signup = () => {
-
     const [action, setAction] = useState("Sign Up");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
     const navigate = useNavigate();
-    const handleClick = () =>{
+    const handleClick = () => {
         navigate('/login');
     };
 
     const handleSubmit = async (e) => {
-        e.preventDefault()
-        try{
-            app.createUserWithEmailAndPassword(email,password)
-        } catch(err){
-            console.log(err)
+        e.preventDefault();
+        try {
+            await createUserWithEmailAndPassword(auth, email, password);
+            navigate('/login');
+        } catch (err) {
+            console.error(err);
         }
-    }
+    };
+
 
     return (
         <div className="container">

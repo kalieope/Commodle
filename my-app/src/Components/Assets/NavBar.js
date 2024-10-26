@@ -5,9 +5,11 @@ import { Link } from 'react-router-dom';
 import { SidebarData } from './SidebarData.js';
 import './NavBar.css';
 import { IconContext } from 'react-icons';
+import { useAuth } from "../../AuthContext.js";
 
 function NavBar() {
-    const [sidebar, setSidebar] = useState(false)
+    const [sidebar, setSidebar] = useState(false);
+    const { isAuthenticated } = useAuth();
 
     const showSidebar = () => setSidebar(!sidebar)
 
@@ -27,20 +29,23 @@ function NavBar() {
                 </Link>
             </li>
             {SidebarData.map((item, index) => {
+              if (item.path === '/login' || item.path === '/signup' || isAuthenticated) {
                 return (
-                    <li key={index} className={item.cName}>
-                        <Link to={item.path}>
-                            {item.icon}
-                            <span>{item.title}</span>
-                        </Link>
-                    </li>
-                )
+                  <li key={index} className={item.cName}>
+                      <Link to={item.path}>
+                          {item.icon}
+                          <span>{item.title}</span>
+                      </Link>
+                  </li>
+                );
+              }
+              return null;
             })}
         </ul>
       </nav>
       </IconContext.Provider>
     </>
-  )
+  );
 }
 
 export default NavBar

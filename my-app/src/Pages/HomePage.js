@@ -143,7 +143,7 @@ const initializeGeocoder = (mapRef) => {
             latitude={restroom.properties.Coordinates[1]}
             longitude={restroom.properties.Coordinates[0]}>
             
-            <button class="marker-btn" onClick={(e) => {
+            <button className="marker-btn" onClick={(e) => {
                 e.preventDefault();
                 setSelectedToilet(restroom);
                 console.log('opening button')
