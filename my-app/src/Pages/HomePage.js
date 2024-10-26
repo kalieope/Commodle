@@ -3,11 +3,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactMapGL, { Marker, Popup, NavigationControl,GeolocateControl } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import bathrooms from './markerTest.json';
+import bathroom from './markerTest.json';
 import toilet_icon from '../Components/Assets/toilet.png';
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import mapboxgl from 'mapbox-gl';
 import '../index.css';
+import axios from "axios";
+
 const key = 'pk.eyJ1IjoiamFjb2J5ZWUiLCJhIjoiY20yM2cxeG9qMDViNzJxcHNrMDl0eDhrNSJ9.64obJH6vBfs70H6SL31XHw'
 
 const Map = () => {
@@ -24,7 +26,23 @@ const Map = () => {
   const mapRef = useRef(null);
   const [userLocation, setUserLocation] = useState(null);
   const [locationMarked, setLocationMarked] = useState(false);
+  const [bathrooms, setBathrooms] = useState([]);
 
+
+  //database stuff
+  useEffect(() => {
+    axios.get("http://localhost:8000/locations/")
+      .then((response) => {
+        console.log("Fetched location data:", response.data);
+        setBathrooms(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching location data:", error);
+      });
+  }, []);
+
+
+  
   useEffect(() => {
     // Get user's location
     if ('geolocation' in navigator) {
@@ -47,68 +65,69 @@ const Map = () => {
       console.log('Geolocation not available');
     }
 
-
-  initializeGeocoder(mapRef);
   }, []);
 
 
-const initializeGeocoder = (mapRef) => {
-  if(!mapRef.current){
-    console.log("Map reference is not ready.");
-    return;
-  }
-  const geocoder = new MapboxGeocoder({
-    accessToken: key,
-    mapboxgl: mapboxgl,
-    marker: false,
-    placeholder: "Search for places",
-  });
-
-  const geocoderContainer = document.getElementById("geocoder-container").appendChild(geocoder.onAdd(mapRef.current.getMap()));
-
-  if (geocoderContainer && !geocoderContainer.hasChildNodes()) {
-    // Container exists, append the geocoder to it
+  const initializeGeocoder = () => {
+    if (!mapRef.current) {
+      console.log("Map reference is not ready.");
+      return;
+    }
+  
+    const geocoder = new MapboxGeocoder({
+      accessToken: key,
+      mapboxgl: mapboxgl,
+      marker: false,
+      placeholder: "Search for places",
+    });
+  
+    // Directly append geocoder to the container for testing purposes
+    const geocoderContainer = document.getElementById("geocoder-container");
     geocoderContainer.appendChild(geocoder.onAdd(mapRef.current.getMap()));
     console.log("Geocoder successfully appended to container.");
-
-  } else {
-    // Container not found, log an error message
-    console.error("Error: Geocoder container not found in the DOM.");
-    console.log("container for geocoder not found");
-  }
-
-  geocoder.on("result", (e) => {
-    if (e.result && e.result.geometry && e.result.geometry.center) {
-      const { center } = e.result.geometry; // Extract center if it exists
   
-      // Update the map's viewport to the center
-      setViewport((prevViewport) => ({
-        ...prevViewport,
-        latitude: center[1],  // Mapbox returns [lng, lat], so center[1] is latitude
-        longitude: center[0], // center[0] is longitude
-        zoom: 18,             // Set a suitable zoom level
-      }));
-    } else if (e.result && e.result.bbox) {
-      // Handle cases where no center is present but a bounding box (bbox) is available
-      const [minLng, minLat, maxLng, maxLat] = e.result.bbox;
-  
-      // Set the viewport to fit the bounding box
-      setViewport((prevViewport) => ({
-        ...prevViewport,
-        latitude: (minLat + maxLat) / 2, // Calculate the midpoint for latitude
-        longitude: (minLng + maxLng) / 2, // Calculate the midpoint for longitude
-        zoom: 12, // Adjust zoom as needed based on the result
-      }));
-    } else {
-      console.error("Error: Geocoder result does not contain a valid center or bbox.");
-    }
-  });
-  }
+    geocoder.on("result", (e) => {
+      if (e.result && e.result.geometry && e.result.geometry.center) {
+        const { center } = e.result.geometry;
+        setViewport((prevViewport) => ({
+          ...prevViewport,
+          latitude: center[1],
+          longitude: center[0],
+          zoom: 18,
+        }));
+      } else if (e.result && e.result.bbox) {
+        const [minLng, minLat, maxLng, maxLat] = e.result.bbox;
+        setViewport((prevViewport) => ({
+          ...prevViewport,
+          latitude: (minLat + maxLat) / 2,
+          longitude: (minLng + maxLng) / 2,
+          zoom: 12,
+        }));
+      } else {
+        console.error("Geocoder result does not contain a valid center or bbox.");
+      }
+    });
+  };
+
+
   return (
 
-    <div style={{ width: "100%", height: "75vh", zIndex: 999}}> 
+    <div style={{ width: "100%", height: "75vh", zIndex: 0}}> 
 
-    <div id="geocoder-container" style={{ position: "absolute", top: 10, left: 10, zIndex: 1 }}></div>
+    <div
+      id="geocoder-container"
+      style={{
+        position: "absolute",
+        top: "25%",     //the top and left are the ones that say where the bar goes
+        left: "12%",       
+        transform: "translate(-50%, -50%)",
+        zIndex: 1, 
+        width: "300px",  
+        backgroundColor: "transparent",
+        padding: "8px",    
+        borderRadius: "4px" 
+      }}
+    ></div>
 
       <ReactMapGL
       {...viewPort}
@@ -138,26 +157,21 @@ const initializeGeocoder = (mapRef) => {
 
     
 
-    {bathrooms.features.map((restroom) =>(
-        <Marker key={restroom.properties.ID} 
-            latitude={restroom.properties.Coordinates[1]}
-            longitude={restroom.properties.Coordinates[0]}>
-            
-            <button class="marker-btn" onClick={(e) => {
-                e.preventDefault();
-                setSelectedToilet(restroom);
-                console.log('opening button')
-            }}>
-                <img src={toilet_icon}
-                    alt='Toilet' />
-            </button>
-        </Marker>
+    {bathrooms.map((restroom) => (
+      <Marker
+        key={restroom.location_identity}
+        latitude={parseFloat(restroom.lat_val)}
+        longitude={parseFloat(restroom.long_val)}
+      >
+        <button> this is a button</button>
+      </Marker>
     ))}
 
     {selectedToilet ? (
         <Popup latitude={selectedToilet.properties.Coordinates[1]} 
                 longitude={selectedToilet.properties.Coordinates[0]}
                 onClose={() => setSelectedToilet(null)}>
+                closeOnClick={true}
             <div>Toilet</div>
         </Popup>
     ) : null}

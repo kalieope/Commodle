@@ -1,9 +1,9 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from sqlalchemy import create_engine, Column, String, Integer
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, Session
 
 # Update the DATABASE_URL to use MySQL
 DATABASE_URL = "mysql+pymysql://admin:commodle-2024@commodle-db.cv2wo88ig6at.us-east-1.rds.amazonaws.com:3306/Commodle?ssl_disabled=true"
@@ -12,6 +12,15 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
 app = FastAPI()
+
+#dependency to get the database session
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
 
 # Add CORS middleware
 origins = [
@@ -32,6 +41,12 @@ class User(Base):
     Account_email = Column(String, index=True)
     Account_pass = Column(String, unique=True, index=True)
 
+class location(Base):
+    __tablename__ = "Location_information"
+    location_identity = Column(String, primary_key=True, index=True)
+    lat_val = Column(String, index=True)
+    long_val = Column(String, unique=True, index=True)
+
 Base.metadata.create_all(bind=engine)
 
 class UserCreate(BaseModel):
@@ -48,3 +63,16 @@ def create_user(user: UserCreate):
     db.refresh(db_user)
     db.close()
     return db_user
+
+# Read location information based on location_identity
+@app.get("/locations/")
+def get_all_locations(db: Session = Depends(get_db)):
+    locations = db.query(location).all()
+    return [
+        {
+            "location_identity": location.location_identity,
+            "lat_val": location.lat_val,
+            "long_val": location.long_val
+        }
+        for location in locations
+    ]
