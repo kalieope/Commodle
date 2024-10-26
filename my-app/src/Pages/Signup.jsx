@@ -1,32 +1,34 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 import './LoginSignup.css'
+import { app } from "../firebaseConfig"
+import { useNavigate } from 'react-router-dom';
+import "./Login"
+import { createUserWithEmailAndPassword } from "firebase/auth";
 
 import user_icon from "../Components/Assets/person.png"
 import email_icon from "../Components/Assets/email.png"
 import password_icon from "../Components/Assets/password.png"
 
-const LoginSignup = () => {
+    
 
-    const [action, setAction] = useState("Login");
-    const [name, setName] = useState("");
+const Signup = () => {
+
+    const [action, setAction] = useState("Sign Up");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleSubmit = async () => {
-        console.log("Username:", name);
-        console.log("Email:", email);
-        console.log("Password:", password);
+    const navigate = useNavigate();
+    const handleClick = () =>{
+        navigate('/login');
+    };
 
-        try {
-            const response = await axios.post('http://localhost:8000/users/', {
-                name,
-                email,
-                password
-            });
-            console.log(response.data);
-        } catch (error) {
-            console.error("There was an error!", error);
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        try{
+            app.createUserWithEmailAndPassword(email,password)
+        } catch(err){
+            console.log(err)
         }
     }
 
@@ -36,18 +38,7 @@ const LoginSignup = () => {
                 <div className="text">{action}</div>
                 <div className="underline"></div>
             </div>
-            <div className="inputs">
-                {action === "Login" ? <div></div> : 
-                <div className="input">
-                    <img src={user_icon} alt="" />
-                    <input 
-                        type="text" 
-                        placeholder="Username"
-                        value={name} 
-                        onChange={(e) => setName(e.target.value)} 
-                    />           
-                </div>}
-                
+            <div className="inputs">      
                 <div className="input">
                     <img src={email_icon} alt="" />
                     <input 
@@ -67,12 +58,10 @@ const LoginSignup = () => {
                     />           
                 </div>
             </div>
-            {action === "Sign Up" ? <div></div> : 
-            <div className="forgot-password">Lost Password? <span>Click Here!</span></div>}
             
             <div className="submit-container">
                 <div className={action === "Login" ? "submit gray" : "submit"} onClick={() => { setAction("Sign Up") }}>Sign Up</div>
-                <div className={action === "Sign Up" ? "submit gray" : "submit"} onClick={() => { setAction("Login") }}>Login</div>
+                <div className={action === "Sign Up" ? "submit gray" : "submit"} onClick={handleClick}>Login</div>
             </div>
             
             <div className="take-input">
@@ -82,4 +71,4 @@ const LoginSignup = () => {
     )
 }
 
-export default LoginSignup
+export default Signup

@@ -7,7 +7,8 @@ import NavBar from './Components/Assets/NavBar.js';
 import AboutPage from './Pages/AboutPage.js';
 import FavoritesPage from './Pages/FavoritesPage.js';
 import Map from './Pages/HomePage.js';
-import LoginSignup from './Pages/LoginSignup.jsx';
+import Signup from './Pages/Signup.jsx';
+import Login from './Pages/Login.jsx';
 import ReviewPage from './Pages/ReviewPage.js';
 import AccountPage from './Pages/AccountPage.js';
 import "./Components/Assets/NavBar.css";
@@ -26,26 +27,30 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element:<Map />
+        element: <Map />,
       },
       {
-        path: "about",
+        path: "/about",
         element: <AboutPage />,
       },
       {
-        path: "favorites",
+        path: "/favorites",
         element: <FavoritesPage />,
       },
       {
-        path: "login/signup",
-        element: <LoginSignup />,
+        path: "/login",
+        element: <Login />,
       },
       {
-        path: "reviews",
+        path: "/signup",
+        element: <Signup />,
+      },
+      {
+        path: "/reviews",
         element: <ReviewPage />,
       },
       {
-        path: "account",
+        path: "/account",
         element: <AccountPage />,
       },
     ],
