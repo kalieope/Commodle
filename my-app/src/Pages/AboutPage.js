@@ -1,3 +1,5 @@
+
+// AboutPage.js
 import React from 'react';
 import './AboutPage.css';
 import colby from '../Components/Assets/colby.jpg';

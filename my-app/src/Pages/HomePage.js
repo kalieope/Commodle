@@ -1,6 +1,5 @@
 //pk.eyJ1IjoiamFjb2J5ZWUiLCJhIjoiY20yM2cxeG9qMDViNzJxcHNrMDl0eDhrNSJ9.64obJH6vBfs70H6SL31XHw
 
-
 import React, { useState, useEffect, useRef } from 'react';
 import ReactMapGL, { Marker, Popup, NavigationControl,GeolocateControl } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -135,6 +134,7 @@ const Map = () => {
       <ReactMapGL
       {...viewPort}
       mapboxAccessToken={key}
+
       width='100%'
       height='100%'
       mapStyle={"mapbox://styles/mapbox/standard"}
@@ -183,6 +183,7 @@ const Map = () => {
               <h3>Toilet Location</h3>
               <button onClick={handleClick}>Leave Review</button>
             </div>
+
         </Popup>
     ) : null}
     
@@ -190,7 +191,6 @@ const Map = () => {
     </div>
   );
 };
-
 
 
 export default Map;
