@@ -1,5 +1,6 @@
 //pk.eyJ1IjoiamFjb2J5ZWUiLCJhIjoiY20yM2cxeG9qMDViNzJxcHNrMDl0eDhrNSJ9.64obJH6vBfs70H6SL31XHw
 
+
 import React, { useState, useEffect, useRef } from 'react';
 import ReactMapGL, { Marker, Popup, NavigationControl,GeolocateControl } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
@@ -22,9 +23,10 @@ const Map = () => {
   });
 
   const navigate = useNavigate();
-    const handleClick = () =>{
-        navigate('/leavereview');
-    };
+  const handleClick = () =>{
+        navigate('/leavereview', {state: {bathroomID: selectedToilet.location_identity}});
+        return selectedToilet;
+  };
 
   const [selectedToilet, setSelectedToilet] = useState(null);
   const mapRef = useRef(null);
@@ -42,7 +44,6 @@ const Map = () => {
         console.error("Error fetching location data:", error);
       });
   }, []);
-
 
   useEffect(() => {
     // Get user's location
@@ -180,7 +181,6 @@ const Map = () => {
               >
             <div>
               <h3>Toilet Location</h3>
-              <p>{selectedToilet.location_identity}</p>
               <button onClick={handleClick}>Leave Review</button>
             </div>
         </Popup>
@@ -190,5 +190,7 @@ const Map = () => {
     </div>
   );
 };
+
+
 
 export default Map;

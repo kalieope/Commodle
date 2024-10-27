@@ -5,7 +5,7 @@ from sqlalchemy import create_engine, Column, String, Integer
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
 
-# Update the DATABASE_URL to use MySQL
+# Update the DATABASE_URL to use MySQL serv
 DATABASE_URL = "mysql+pymysql://admin:commodle-2024@commodle-db.cv2wo88ig6at.us-east-1.rds.amazonaws.com:3306/Commodle?ssl_disabled=true"
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -66,6 +66,7 @@ class ReviewCreate(BaseModel):
     Review_content: str
     Bathroom_id: int
 
+
 @app.post("/reviews/")
 def submit_review(review: ReviewCreate):
     db = SessionLocal()
@@ -97,4 +98,19 @@ def get_all_locations(db: Session = Depends(get_db)):
             "long_val": location.long_val
         }
         for location in locations
+    ]
+
+
+@app.get("/reviews/")
+def get_all_reviews(db: Session = Depends(get_db)):
+    reviews = db.query(Review).all()
+    return[
+        {
+            "id": review.id,
+            "Account_email": review.Account_email,
+            "Rating": review.Rating,
+            "Review_content": review.Review_content,
+            "Bathroom_id": review.Bathroom_id
+        }
+        for review in reviews
     ]

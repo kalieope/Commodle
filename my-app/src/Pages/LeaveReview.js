@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { auth } from "../firebaseConfig";
 import axios from "axios";
 import "../main.py";
@@ -61,6 +61,8 @@ const styles = {
   }
 };
 
+
+
 function checkuser() {
   if (!auth.currentUser) {
     console.error("No authenticated user");
@@ -70,21 +72,23 @@ function checkuser() {
   }
 }
 
+  
 const Review = () => {
+  const location = useLocation();
   const [reviews, setReviews] = useState([]);
   const [Rating, setRating] = useState('');
   const [Review_content, setText] = useState('');
-  const Bathroom_id = 1;
+  const { bathroomID } = location.state || {};
   const navigate = useNavigate();
   const handleClick = () =>{
-    navigate("/");
+    navigate("/reviews");
   };
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     console.log("Rating:", Rating);
     console.log("content:", Review_content);
+    console.log("bath id:", bathroomID);
     try {
       if (checkuser()) {
         const Account_email = auth.currentUser.email;
@@ -92,13 +96,13 @@ const Review = () => {
           Account_email,
           Rating: parseInt(Rating),
           Review_content,
-          Bathroom_id
+          Bathroom_id: parseInt(bathroomID)
       });
         handleClick();
         console.log(response.data);
       }
     } catch (error) {
-      console.error("There was an error submitting review! :(", error);
+      console.error("There was an error submitting review.", error);
     }
   };
 
