@@ -49,7 +49,7 @@ To install and run this project locally, follow these steps:
 ## Usage
 
 Once the server is running, open your browser and navigate to `http://localhost:3000/` to use the application.
-Alternatively, you may access various deployments through vercel in the github.
+Alternatively, you may access various deployments through vercel, which should be linked under the github About!
 
 ## Features
 - **Home Page**: Displays a searchable map with custom bathroom markers.
