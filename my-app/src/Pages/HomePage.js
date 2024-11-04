@@ -27,6 +27,7 @@ const Map = () => {
         return selectedToilet;
   };
 
+
   const [selectedToilet, setSelectedToilet] = useState(null);
   const mapRef = useRef(null);
   const [userLocation, setUserLocation] = useState(null);
@@ -113,6 +114,9 @@ const Map = () => {
     setSelectedToilet(null);
   };
 
+  function handleFavorite() {
+    console.log('made a favorite');
+  }
   
   return (
     <div style={{ width: "100%", height: "75vh", zIndex: 0}}> 
@@ -136,7 +140,7 @@ const Map = () => {
       mapboxAccessToken={key}
 
       width='100%'
-      height='100%'
+      height='90%'
       mapStyle={"mapbox://styles/mapbox/standard"}
       onMove={(evt) => setViewport(evt.viewState)}
     //Allows to move around map
@@ -180,8 +184,11 @@ const Map = () => {
                 closeOnClick={false}
               >
             <div>
-              <h3>Toilet Location</h3>
+              <p>Bathroom name: {selectedToilet.loc_name}</p>
+              <p>Description: {selectedToilet.Bathroom_desc}</p>
+              <p>Reviews: {selectedToilet.Bathroom_rating}</p>
               <button onClick={handleClick}>Leave Review</button>
+              <button onclick={handleFavorite()}>Make it a favorite?</button>
             </div>
 
         </Popup>

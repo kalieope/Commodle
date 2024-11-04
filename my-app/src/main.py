@@ -44,6 +44,10 @@ class location(Base):
     location_identity = Column(String, primary_key=True, index=True)
     lat_val = Column(String, index=True)
     long_val = Column(String, unique=True, index=True)
+    loc_name = Column(String, index=True)
+    Bathroom_rating = Column(String, index=True)
+    Bathroom_desc = Column(String, index=True)
+    
 
 class Review(Base):
     __tablename__ = "reviews"
@@ -95,7 +99,10 @@ def get_all_locations(db: Session = Depends(get_db)):
         {
             "location_identity": location.location_identity,
             "lat_val": location.lat_val,
-            "long_val": location.long_val
+            "long_val": location.long_val,
+            "loc_name": location.loc_name,
+            "Bathroom_rating": location.Bathroom_rating,
+            "Bathroom_desc": location.Bathroom_desc
         }
         for location in locations
     ]
