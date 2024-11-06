@@ -3,7 +3,6 @@ import './LoginSignup.css'
 import { useNavigate } from 'react-router-dom'
 import { signInWithEmailAndPassword} from "firebase/auth";
 import { auth } from "../firebaseConfig";
-import { useAuth } from "../AuthContext";
 import email_icon from "../Components/Assets/email.png"
 import password_icon from "../Components/Assets/password.png"
 
@@ -12,7 +11,6 @@ const Login = () => {
     const [action, setAction] = useState("Login");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const { login } = useAuth();
     
     const navigate = useNavigate();
     const handleClick = () =>{
@@ -23,7 +21,6 @@ const Login = () => {
         e.preventDefault();
         try{
             await signInWithEmailAndPassword(auth, email, password);
-            login();
             navigate('/');
         } catch (err){
             console.error(err);
