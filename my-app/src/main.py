@@ -48,7 +48,11 @@ class location(Base):
     Bathroom_rating = Column(String, index=True)
     Bathroom_desc = Column(String, index=True)
     
-
+class Favorites(Base):
+    __tablename__="UserFavorites"
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
+    user_email = Column(String, index=True)
+    bathroom_keyval = Column(String, index=True)
 class Review(Base):
     __tablename__ = "reviews"
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
@@ -59,6 +63,10 @@ class Review(Base):
 
 Base.metadata.create_all(bind=engine)
 
+class FavoriteCreate(BaseModel):
+    id: int
+    user_email: str
+    bathroom_keyval: str
 class UserCreate(BaseModel):
     name: str
     email: str
@@ -92,6 +100,12 @@ def create_user(user: UserCreate):
     db.close()
     return db_user
 
+#
+#@app.post("/Favorites/")
+#def create_favorite(Favorites: FavoriteCreate):
+#    db = SessionLocal()
+#    db_user = User(Account_email=user.email)
+#
 @app.get("/locations/")
 def get_all_locations(db: Session = Depends(get_db)):
     locations = db.query(location).all()
@@ -106,6 +120,7 @@ def get_all_locations(db: Session = Depends(get_db)):
         }
         for location in locations
     ]
+
 
 
 @app.get("/reviews/")

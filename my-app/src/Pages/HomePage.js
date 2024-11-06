@@ -27,6 +27,9 @@ const Map = () => {
         return selectedToilet;
   };
 
+  const handleFavorite = () =>{
+    console.log("made a favorite");
+  }
 
   const [selectedToilet, setSelectedToilet] = useState(null);
   const mapRef = useRef(null);
@@ -114,9 +117,7 @@ const Map = () => {
     setSelectedToilet(null);
   };
 
-  function handleFavorite() {
-    console.log('made a favorite');
-  }
+
   
   return (
     <div style={{ width: "100%", height: "75vh", zIndex: 0}}> 
@@ -188,7 +189,7 @@ const Map = () => {
               <p>Description: {selectedToilet.Bathroom_desc}</p>
               <p>Reviews: {selectedToilet.Bathroom_rating}</p>
               <button onClick={handleClick}>Leave Review</button>
-              <button onclick={handleFavorite()}>Make it a favorite?</button>
+              <button onClick={handleFavorite}>Make it a favorite?</button>
             </div>
 
         </Popup>
