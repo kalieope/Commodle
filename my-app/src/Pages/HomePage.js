@@ -1,14 +1,16 @@
 //pk.eyJ1IjoiamFjb2J5ZWUiLCJhIjoiY20yM2cxeG9qMDViNzJxcHNrMDl0eDhrNSJ9.64obJH6vBfs70H6SL31XHw
 
 import React, { useState, useEffect, useRef } from 'react';
-import ReactMapGL, { Marker, Popup, NavigationControl,GeolocateControl } from 'react-map-gl';
+import ReactMapGL, { Marker, Popup,NavigationControl,GeolocateControl, Source, Layer } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import toilet_icon from '../Components/Assets/toilet.png';
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
+import MapboxDirections from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions';// new
 import mapboxgl from 'mapbox-gl';
 import '../index.css';
 import { useNavigate } from 'react-router-dom'
 import axios from "axios";
+
 
 const key = 'pk.eyJ1IjoiamFjb2J5ZWUiLCJhIjoiY20yM2cxeG9qMDViNzJxcHNrMDl0eDhrNSJ9.64obJH6vBfs70H6SL31XHw'
 
@@ -26,16 +28,53 @@ const Map = () => {
         navigate('/leavereview', {state: {bathroomID: selectedToilet.location_identity}});
         return selectedToilet;
   };
-
+  
+  //toggles the favorite for the user
   const handleFavorite = () =>{
     console.log("made a favorite");
   }
-
+  //constants
   const [selectedToilet, setSelectedToilet] = useState(null);
   const mapRef = useRef(null);
   const [userLocation, setUserLocation] = useState(null);
   const [locationMarked, setLocationMarked] = useState(false);
   const [bathrooms, setBathrooms] = useState([]);
+  const [clickedLocation, setClickedLocation] = useState(null);//new
+  const [route, setRoute] = useState(null); //new
+
+  //logs the console when the map is clicked
+  const handleMapClick = (event) => {
+    const longitude = event.lngLat.lng;
+    const latitude = event.lngLat.lat;
+    setClickedLocation({longitude, latitude});
+    console.log('Clicked location: ', longitude, latitude);
+    
+  }
+
+  //directions part of the map  new
+  const getRoute = async (start, end) => {
+
+      // Check if start and end coordinates are valid
+
+    const url = `https://api.mapbox.com/directions/v5/mapbox/driving/-122.4194,37.7749;-118.2437,34.0522?geometries=geojson&access_token=YOUR_MAPBOX_ACCESS_TOKEN`;
+    
+    try {
+      const response = await axios.get(url);
+      const routeData = response.data.routes[0].geometry;
+      setRoute(routeData);
+      console.log('its working')
+    } catch (error) {
+      console.log('its not working')
+    }
+
+  };
+
+  //makes a route
+  useEffect(() => {
+    if (userLocation && clickedLocation) {
+      getRoute(userLocation, clickedLocation);
+    }
+  }, [userLocation, clickedLocation]);
 
   useEffect(() => {
     axios.get("http://localhost:8000/locations/")
@@ -118,7 +157,6 @@ const Map = () => {
   };
 
 
-  
   return (
     <div style={{ width: "100%", height: "75vh", zIndex: 0}}> 
     <div
@@ -144,6 +182,9 @@ const Map = () => {
       height='90%'
       mapStyle={"mapbox://styles/mapbox/standard"}
       onMove={(evt) => setViewport(evt.viewState)}
+      //gets the location data of the click on the map
+      onClick={handleMapClick}
+
     //Allows to move around map
       onViewportChange={(viewPort)=>setViewport(viewPort)}
       ref={mapRef}
@@ -195,6 +236,20 @@ const Map = () => {
         </Popup>
     ) : null}
     
+    //display the root
+    {route && (
+        <Source id="route" type="geojson" data={{ type: 'Feature', geometry: route }}>
+          <Layer
+            id="route-line"
+            type="line"
+            paint={{
+              'line-color': '#3b9ddd',
+              'line-width': 4,
+            }}
+          />
+        </Source>
+      )}
+
       </ReactMapGL>
     </div>
   );
