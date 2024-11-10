@@ -4,6 +4,7 @@ from pydantic import BaseModel
 from sqlalchemy import create_engine, Column, String, Integer
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
+from fastapi import Query
 
 # Update the DATABASE_URL to use MySQL serv
 DATABASE_URL = "mysql+pymysql://admin:commodle-2024@commodle-db.cv2wo88ig6at.us-east-1.rds.amazonaws.com:3306/Commodle?ssl_disabled=true"
@@ -51,8 +52,9 @@ class location(Base):
 class Favorites(Base):
     __tablename__="UserFavorites"
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    user_email = Column(String, index=True)
-    bathroom_keyval = Column(String, index=True)
+    user_email = Column(String, index=True, nullable = False)
+    bathroom_keyval = Column(String, index=True, nullable = False)
+
 class Review(Base):
     __tablename__ = "reviews"
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
@@ -64,7 +66,6 @@ class Review(Base):
 Base.metadata.create_all(bind=engine)
 
 class FavoriteCreate(BaseModel):
-    id: int
     user_email: str
     bathroom_keyval: str
 class UserCreate(BaseModel):
@@ -99,13 +100,41 @@ def create_user(user: UserCreate):
     db.refresh(db_user)
     db.close()
     return db_user
+#new
+@app.post("/favorites/")
+def create_favorite(favorite: FavoriteCreate, db: Session = Depends(get_db)):
+    db_favorite = Favorites(user_email=favorite.user_email, bathroom_keyval=favorite.bathroom_keyval)
+    db.add(db_favorite)
+    db.commit()
+    db.refresh(db_favorite)
+    return db_favorite
+#new
+#checks to see if the account already has the bathroom favorited    
+@app.get("/favorites/")
+def check_favorites(user_email: str = Query(...), bathroom_keyval: str = Query(...), db: Session = Depends(get_db)):
+    favorite = db.query(Favorites).filter(
+        Favorites.user_email == user_email,
+        Favorites.bathroom_keyval == bathroom_keyval
+    ).first()
+    #run if the account has the bathroom as a favorite
+    if favorite:
+        return True
+    #the user is not favorited
+    else:
+        return False
+#new
+#delete the favorite if the button is pressed 
+@app.delete("/favorites/")
+def delete_favorite(user_email: str, bathroom_keyval: str, db: Session = Depends(get_db)):
+    favorite = db.query(Favorites).filter(
+        Favorites.user_email == user_email,
+        Favorites.bathroom_keyval == bathroom_keyval
+    ).first()
+    db.delete(favorite)
+    db.commit()
+    return {"Favorite removed successfully"}
 
-#
-#@app.post("/Favorites/")
-#def create_favorite(Favorites: FavoriteCreate):
-#    db = SessionLocal()
-#    db_user = User(Account_email=user.email)
-#
+ 
 @app.get("/locations/")
 def get_all_locations(db: Session = Depends(get_db)):
     locations = db.query(location).all()
