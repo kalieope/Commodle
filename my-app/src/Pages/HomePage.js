@@ -1,14 +1,18 @@
+
 //pk.eyJ1IjoiamFjb2J5ZWUiLCJhIjoiY20yM2cxeG9qMDViNzJxcHNrMDl0eDhrNSJ9.64obJH6vBfs70H6SL31XHw
 
 import React, { useState, useEffect, useRef } from 'react';
-import ReactMapGL, { Marker, Popup, NavigationControl,GeolocateControl } from 'react-map-gl';
+import ReactMapGL, { Marker, Popup,NavigationControl, GeolocateControl, Source, Layer } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import toilet_icon from '../Components/Assets/toilet.png';
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
+import MapboxDirections from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions';// new
 import mapboxgl from 'mapbox-gl';
+import { auth } from "../firebaseConfig";
 import '../index.css';
 import { useNavigate } from 'react-router-dom'
 import axios from "axios";
+
 
 const key = 'pk.eyJ1IjoiamFjb2J5ZWUiLCJhIjoiY20yM2cxeG9qMDViNzJxcHNrMDl0eDhrNSJ9.64obJH6vBfs70H6SL31XHw'
 
@@ -26,12 +30,100 @@ const Map = () => {
         navigate('/leavereview', {state: {bathroomID: selectedToilet.location_identity}});
         return selectedToilet;
   };
+  
+  //toggles the favorite for the user
+  const handleFavorite = async () =>{
+    console.log("email:", auth.currentUser.email);
+    console.log("bath id:", selectedToilet.location_identity);
 
+    try{
+      const Account_email = auth.currentUser.email;
+      const bathroomID = selectedToilet.location_identity;
+      //check if exists already
+      console.log('checkpoint 0');
+      const checkResponse = await axios.get("http://localhost:8000/favorites/",{
+        params: {
+          user_email: Account_email,
+          bathroom_keyval: bathroomID
+        }
+      });
+      console.log('checkpoint 1');
+      console.log(checkResponse.data);
+       //add if not exists
+      if(checkResponse.data == false){
+        console.log('checkpoint 2');
+        const response = await axios.post("http://localhost:8000/favorites/",{        
+        user_email: Account_email,
+        bathroom_keyval: bathroomID
+      });
+      console.log("made a favorite");
+      console.log(response.data);}
+
+      // delete because it already is favorite
+      if(checkResponse.data == true){
+        console.log('checkpoint 3')
+        const deleteResponse = await axios.delete("http://localhost:8000/favorites/",{
+          params: {
+            user_email: Account_email,
+            bathroom_keyval: bathroomID
+          }
+        });
+        console.log("removed from favorites");
+        console.log(deleteResponse.data);
+      }
+
+    }catch(error){
+      console.log("an error has occured");
+    }
+    
+  }
+  //constants
   const [selectedToilet, setSelectedToilet] = useState(null);
   const mapRef = useRef(null);
   const [userLocation, setUserLocation] = useState(null);
   const [locationMarked, setLocationMarked] = useState(false);
   const [bathrooms, setBathrooms] = useState([]);
+  const [clickedLocation, setClickedLocation] = useState(null);//new
+  const [route, setRoute] = useState(null); //new
+
+  //logs the console when the map is clicked
+  const handleMapClick = (event) => {
+    const longitude = event.lngLat.lng;
+    const latitude = event.lngLat.lat;
+    setClickedLocation({longitude, latitude});
+    console.log('Clicked location: ', longitude, latitude);
+    
+  }
+
+  //directions part of the map  new
+  const getRoute = async (start, end) => {
+
+      // Check if start and end coordinates are valid
+
+    const url = `https://api.mapbox.com/directions/v5/mapbox/driving/
+                ${userLocation.longitude},
+                ${userLocation.latitude};
+                ${clickedLocation.longitude},
+                ${clickedLocation.latitude}?access_token=${key}`
+
+    //its not showing the line on the map but it is working, fix later.
+    try {
+      const response = await axios.get(url);
+      const routeData = response.data.routes[0].geometry;
+      setRoute(routeData);
+      console.log('its working')
+    } catch (error) {
+      console.log('its not working')
+    }
+
+  };
+
+  //makes a route
+  useEffect(() => {
+    if (userLocation && clickedLocation) {
+      getRoute(userLocation, clickedLocation);
+    }
+  }, [userLocation, clickedLocation]);
 
   useEffect(() => {
     axios.get("http://localhost:8000/locations/")
@@ -113,7 +205,7 @@ const Map = () => {
     setSelectedToilet(null);
   };
 
-  
+
   return (
     <div style={{ width: "100%", height: "75vh", zIndex: 0}}> 
     <div
@@ -136,9 +228,12 @@ const Map = () => {
       mapboxAccessToken={key}
 
       width='100%'
-      height='100%'
+      height='90%'
       mapStyle={"mapbox://styles/mapbox/standard"}
       onMove={(evt) => setViewport(evt.viewState)}
+      //gets the location data of the click on the map
+      onClick={handleMapClick}
+
     //Allows to move around map
       onViewportChange={(viewPort)=>setViewport(viewPort)}
       ref={mapRef}
@@ -180,13 +275,30 @@ const Map = () => {
                 closeOnClick={false}
               >
             <div>
-              <h3>Toilet Location</h3>
+              <p>Bathroom name: {selectedToilet.loc_name}</p>
+              <p>Description: {selectedToilet.Bathroom_desc}</p>
+              <p>Reviews: {selectedToilet.Bathroom_rating}</p>
               <button onClick={handleClick}>Leave Review</button>
+              <button onClick={handleFavorite}>Make it a favorite?</button>
             </div>
 
         </Popup>
     ) : null}
     
+    //display the root
+    {route && (
+        <Source id="route" type="geojson" data={{ type: 'Feature', geometry: route }}>
+          <Layer
+            id="route-line"
+            type="line"
+            paint={{
+              'line-color': '#3b9ddd',
+              'line-width': 4,
+            }}
+          />
+        </Source>
+      )}
+
       </ReactMapGL>
     </div>
   );
