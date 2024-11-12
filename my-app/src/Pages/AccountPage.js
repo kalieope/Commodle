@@ -21,31 +21,22 @@ const AccountPage = () => {
     const user = auth.currentUser;
     if (user) {
       updatePassword(user, newPassword).then(() => {
-        // Password updated.
         handleLogout();
       }).catch((error) => {
-        // An error happened.
         console.error("Error updating password: ", error);
       });
     }
   };
 
-  const containerStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    height: '100vh',
-    backgroundColor: 'none',
-    fontFamily: 'Arial, sans-serif'
-  };
+
+  const Account_email = auth.currentUser.email;
 
   const headerStyle = {
     position: 'absolute',
-    top: "40px",
+    top: "70px",
     left: "0",
     width: '100%',
-    padding: '10px',
+    padding: '15px',
     backgroundColor: '#f8f9fa',
     textAlign: 'center',
   };
@@ -56,60 +47,54 @@ const AccountPage = () => {
     right: "20px",
     padding: '10px 20px',
     fontSize: '16px',
-    fontweight: '700',
+    fontWeight: '700',
     color: '#fff',
     backgroundColor: '#84D4FF',
     border: 'none',
     borderRadius: '5px',
     cursor: 'pointer'
   };
+
   const buttonStyle = {
     position: 'absolute',
     top: "200px",
     right: "20px",
     padding: '10px 20px',
     fontSize: '16px',
-    fontweight: '700',
+    fontWeight: '700',
     color: '#fff',
     backgroundColor: '#84D4FF',
     border: 'none',
     borderRadius: '5px',
     cursor: 'pointer'
   };
-  const bodyStyle = {
+
+  const inputp = {
+    position: 'absolute',
+    flex: 'column',
+    top: '250px',
+    right: '30px',
+    width: '150px',
     height: '50px',
-    width: '400px',
-    background: 'transparent',
-    border: 'none',
-    outline: 'none',
-    color: '#797979',
-    fontSize: '19px',
+    fontSize: '16px',
+    fontWeight: '700',
+    backgroundColor: '#eaeaea',
   };
 
-  const input = {
-    display: 'flex',
-    alignItems: 'center',
-    margin: 'auto',
-    width: '480px',
-    height: '80px',
-    background: '#eaeaea',
-    borderRadius: '6px',
-};
-
   return (
-    <div style={containerStyle}>
+    <div>
       <header style={headerStyle}>
-        <h1 style={headerStyle}>Your Account</h1>
+        <h1>Hi, {Account_email}</h1>
       </header>
       <button type="button" style={buttonStyleL} onClick={handleLogout}>Logout</button>
-      <div className='input' style={input}>
-      <input 
-        type="password" 
-        style = {bodyStyle}
-        placeholder="New Password" 
-        value={newPassword} 
-        onChange={(e) => setNewPassword(e.target.value)} 
-      />
+      <div>
+        <input 
+          type="password"
+          style={inputp} 
+          placeholder="New Password" 
+          value={newPassword} 
+          onChange={(e) => setNewPassword(e.target.value)} 
+        />
       </div>
       <button type="button" style={buttonStyle} onClick={handleChangePassword}>Change Password</button>
     </div>
