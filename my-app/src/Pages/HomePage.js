@@ -28,6 +28,7 @@ const Map = () => {
   const navigate = useNavigate();
   const Account_email = auth.currentUser.email;
   const handleClick = () =>{
+        console.log("bath id:", selectedToilet.location_identity);
         navigate('/leavereview', {state: {bathroomID: selectedToilet.location_identity}});
         return selectedToilet;
   };

@@ -16,6 +16,7 @@ const AccountPage = () => {
   const [tablePreference, setTablePreference] = useState('');
   const [favorites, setFavorites] = useState([]);
   const [reviews, setReviews] = useState([]);
+  const [allPrefs, setallPrefs] = useState([]);
   
   const navigate = useNavigate();
 
@@ -90,6 +91,23 @@ const AccountPage = () => {
     fetchReviews();
   }, [Account_email]);
 
+  useEffect(() => {
+    const fetchallPrefs = async () => {
+      try{
+        const response = await axios.get("http://localhost:8000/users/yourpref/",{
+          params: {
+            Account_email: Account_email,
+          },
+        });
+        setallPrefs(response.data);
+        console.log("Preferences data:", response.data);
+      } catch(error){
+        console.error("Error fetching preferences ", error);
+      }
+    };
+    fetchallPrefs();
+  }, [Account_email]);
+
   const handleLogout = async () => {
     try {
       await signOut(auth);
@@ -120,6 +138,7 @@ const AccountPage = () => {
     borderRadius: '8px',
     textAlign: 'center',
     alignItem: 'center',
+    color: "#fff",
   };
 
   const buttonStyleL = {
@@ -235,11 +254,29 @@ const AccountPage = () => {
     listStyleType: 'none',
   };
 
+  const allprefStyle = {
+    position: 'absolute',
+    top: '250px',
+    left: '750px',
+    width: '400px',
+    height: '200px',
+    padding: '10px',
+    backgroundColor: '#f8f9fa',
+    borderRadius: '5px',
+    boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+    overflowY: 'auto',
+  };
+
+  const allprefItemStyle = {
+    borderBottom: '1px solid #ddd',
+    padding: '10px 0',
+    listStyleType: 'none',
+  };
+
   const photoStyle ={
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
+    position: 'absolute',
+    left: '43%',
+    top: '185%',
   }
 
   return (
@@ -324,6 +361,21 @@ const AccountPage = () => {
               <p><strong>Rating:</strong> {review.Rating}</p>
               <p><strong>Review:</strong> {review.Review_content}</p>
               <p><strong>Bathroom ID:</strong> {review.Bathroom_id}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div style={allprefStyle}>
+        <h2>Your Preferences</h2>
+        <ul style={{ padding: 0 }}>
+          {allPrefs.map((prefs, index) => (
+            <li key={index} style={allprefItemStyle}>
+              <p><strong>Gender:</strong> {prefs.Gender_Preference}</p>
+              <p><strong>Type:</strong> {prefs.Type_Preference}</p>
+              <p><strong>Accessibility:</strong> {prefs.Accessibility_Preference}</p>
+              <p><strong>Floor:</strong> {prefs.Floor_Preference}</p>
+              <p><strong>Stall:</strong> {prefs.Stall_Preference}</p>
+              <p><strong>Changing Table:</strong> {prefs.Type_Preference}</p>
             </li>
           ))}
         </ul>

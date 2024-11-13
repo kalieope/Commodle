@@ -191,6 +191,21 @@ def get_your_reviews(Account_email: str, db: Session = Depends(get_db)):
         for review in rev
     ]
 
+@app.get("/users/yourpref/")
+def get_your_preferences(Account_email: str, db: Session = Depends(get_db)):
+    pref = db.query(User).filter(User.Account_email == Account_email).all()
+    return[
+        {
+            "Gender_Preference": User.Gender_Preference,
+            "Type_Preference": User.Type_Preference,
+            "Accessibility_Preference": User.Accessibility_Preference,
+            "Floor_Preference": User.Floor_Preference,
+            "Stall_Preference": User.Stall_Preference,
+            "Changing_Table_Preference": User.Changing_Table_Preference
+        }
+        for User in pref
+    ]
+
 @app.get("/UserFavorites/")
 def get_your_favorites(user_email: str, db: Session = Depends(get_db)):
     favs = db.query(location).join(Favorites, location.location_identity == Favorites.bathroom_keyval).filter(Favorites.user_email == user_email).all()

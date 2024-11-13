@@ -78,7 +78,7 @@ const Review = () => {
   const [reviews] = useState([]);
   const [Rating, setRating] = useState('');
   const [Review_content, setText] = useState('');
-  const { bathroomID } = location.state || {};
+  const { bathroomID } = location.state || {} ;
   const navigate = useNavigate();
   const handleClick = () =>{
     navigate("/reviews");
