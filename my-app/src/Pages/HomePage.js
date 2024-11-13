@@ -4,7 +4,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ReactMapGL, { Marker, Popup,NavigationControl, GeolocateControl, Source, Layer } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import toilet_icon from '../Components/Assets/toilet.png';
+import toilet_icon from '../Components/Assets/potty.png';
 import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
 import MapboxDirections from '@mapbox/mapbox-gl-directions/dist/mapbox-gl-directions';// new
 import mapboxgl from 'mapbox-gl';
@@ -26,6 +26,7 @@ const Map = () => {
   });
 
   const navigate = useNavigate();
+  const Account_email = auth.currentUser.email;
   const handleClick = () =>{
         navigate('/leavereview', {state: {bathroomID: selectedToilet.location_identity}});
         return selectedToilet;
@@ -71,12 +72,12 @@ const Map = () => {
         console.log("removed from favorites");
         console.log(deleteResponse.data);
       }
-
     }catch(error){
       console.log("an error has occured");
     }
-    
   }
+
+  
   //constants
   const [selectedToilet, setSelectedToilet] = useState(null);
   const mapRef = useRef(null);
@@ -85,7 +86,9 @@ const Map = () => {
   const [bathrooms, setBathrooms] = useState([]);
   const [clickedLocation, setClickedLocation] = useState(null);//new
   const [route, setRoute] = useState(null); //new
+  const [Filters, setFilters] = useState('all');
 
+  
   //logs the console when the map is clicked
   const handleMapClick = (event) => {
     const longitude = event.lngLat.lng;
@@ -100,7 +103,7 @@ const Map = () => {
 
       // Check if start and end coordinates are valid
 
-    const url = `https://api.mapbox.com/directions/v5/mapbox/driving/
+    const url = `https://api.mapbox.com/directions/v5/mapbox/walking/
                 ${userLocation.longitude},
                 ${userLocation.latitude};
                 ${clickedLocation.longitude},
@@ -125,8 +128,14 @@ const Map = () => {
     }
   }, [userLocation, clickedLocation]);
 
-  useEffect(() => {
-    axios.get("http://localhost:8000/locations/")
+  const handleChangeFilter = async(e) =>{
+    const newFiltersVal = e.target.value
+    console.log("currently in", Filters)
+    setFilters(newFiltersVal)
+
+    setBathrooms([])
+    if(newFiltersVal == "all"){
+      axios.get("http://localhost:8000/locations/")
       .then((response) => {
         console.log("Fetched location data:", response.data);
         setBathrooms(response.data);
@@ -134,6 +143,39 @@ const Map = () => {
       .catch((error) =>{
         console.error("Error fetching location data:", error);
       });
+      console.log("Changing to All")
+    }
+    if(newFiltersVal == 'favorites'){
+      const response = await axios.get("http://localhost:8000/UserFavorites/",{
+        params: {
+          user_email: Account_email,
+        },
+      });
+      setBathrooms(response.data)
+      console.log("Changing to Favorites")
+    }
+    if(newFiltersVal == 'preferences'){
+      const response = await axios.get("http://localhost:8000/users/preferences/",{
+        params: {
+          user_email: Account_email,
+        },
+      });
+      setBathrooms(response.data)
+      console.log("Changing to user's preferences")
+    }
+  }
+
+  useEffect(() => {
+      setBathrooms([])
+      axios.get("http://localhost:8000/locations/")
+        .then((response) => {
+          console.log("Fetched location data:", response.data);
+          setBathrooms(response.data);
+        })
+        .catch((error) =>{
+          console.error("Error fetching location data:", error);
+        });
+        console.log("Setting to All")
   }, []);
 
   useEffect(() => {
@@ -205,6 +247,27 @@ const Map = () => {
     setSelectedToilet(null);
   };
 
+  //CSS for the dropdown menu
+  const labelStyle = {
+    display: 'block',
+    marginBottom: '10px',
+  };
+  //style for the block
+  const preferencesStyle = {
+    position: 'absolute',
+    top: '250px',
+    left: '20px',
+    width: '200px',
+    padding: '10px',
+    backgroundColor: '#f8f9fa',
+    borderRadius: '5px',
+    boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+  };
+  const selectStyle = {
+    width: '100%',
+    padding: '5px',
+    fontSize: '16px',
+  };
 
   return (
     <div style={{ width: "100%", height: "75vh", zIndex: 0}}> 
@@ -212,9 +275,8 @@ const Map = () => {
       id="geocoder-container"
       style={{
         position: "absolute",
-        top: "25%",     //the top and left are the ones that say where the bar goes
-        left: "12%",       
-        transform: "translate(-50%, -50%)",
+        top: "15%",     //the top and left are the ones that say where the bar goes
+        left: "0%",       
         zIndex: 1, 
         width: "300px",  
         backgroundColor: "transparent",
@@ -239,7 +301,8 @@ const Map = () => {
       ref={mapRef}
       onLoad={() => {
         console.log("Map loaded");
-        initializeGeocoder(mapRef); // Initialize geocoder only after the map has loaded
+        //initialize geocoder only after the map has loaded
+        initializeGeocoder(mapRef); 
       }}
       >
     
@@ -263,7 +326,7 @@ const Map = () => {
         <img
         src={toilet_icon}
         alt = "Toilet Marker"
-        style={{width: '100px', height: '100px', cursor: 'pointer'}}
+        style={{width: '50px', height: '50px', cursor: 'pointer'}}
         />
       </Marker>
     ))}
@@ -285,7 +348,6 @@ const Map = () => {
         </Popup>
     ) : null}
     
-    //display the root
     {route && (
         <Source id="route" type="geojson" data={{ type: 'Feature', geometry: route }}>
           <Layer
@@ -300,7 +362,17 @@ const Map = () => {
       )}
 
       </ReactMapGL>
+     <div style={preferencesStyle}>
+      <label style={labelStyle}>
+          <select value={Filters} onChange={(e) => handleChangeFilter(e)} style={selectStyle}>
+            <option value="all">All</option>
+            <option value="favorites">Favorites</option>
+            <option value="preferences">Preferences</option>
+          </select>
+        </label>
+      </div>
     </div>
+
   );
 };
 

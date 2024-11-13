@@ -2,10 +2,9 @@
 // index.js
 import React from 'react';
 import { createRoot } from "react-dom/client";
-import { createBrowserRouter, RouterProvider, Route, Outlet } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import NavBar from './Components/Assets/NavBar.js';
 import AboutPage from './Pages/AboutPage.js';
-import FavoritesPage from './Pages/FavoritesPage.js';
 import Map from './Pages/HomePage.js';
 import Signup from './Pages/Signup.jsx';
 import Login from './Pages/Login.jsx';
@@ -34,10 +33,6 @@ const router = createBrowserRouter([
       {
         path: "/about",
         element: <ProtectedRoute><AboutPage /></ProtectedRoute>,
-      },
-      {
-        path: "/favorites",
-        element: <ProtectedRoute><FavoritesPage /></ProtectedRoute>,
       },
       {
         path: "/login",

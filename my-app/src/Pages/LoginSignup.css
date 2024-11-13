@@ -14,7 +14,7 @@
     align-items: center;
     gap: 9px;
     width: 100%;
-    margin-top: 30px;
+    margin-top: 40px;
 
 }
 
@@ -22,13 +22,6 @@
     color: #3c009d;
     font-size: 48px;
     font-weight: 700;
-}
-
-.underline{
-    width: 61px;
-    height: 6px;
-    background: #3c009d;
-    border-radius: 9px;
 }
 
 .inputs{

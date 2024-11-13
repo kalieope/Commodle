@@ -19,12 +19,6 @@ export const SidebarData = [
         cName: 'nav-text'
     },
     {
-        title: 'Favorites',
-        path: '/favorites',
-        icon: <FaIcons.FaRegStar />,
-        cName: 'nav-text'
-    },
-    {
         title: 'About',
         path: '/about',
         icon: <IoIcons.IoIosInformationCircleOutline />,

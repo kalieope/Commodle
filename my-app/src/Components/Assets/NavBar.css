@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Kode+Mono&display=swap');
+
 .navbar{
     background-color:#71b9df;
     height: 80px;
@@ -13,6 +15,20 @@
     margin-left: 2rem;
     font-size: 2rem;
     background: none;
+}
+.header{
+    position:absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    text-align: center;
+    color: #fff;
+    font-family: "Kode Mono", monospace;
+    font-size: 28px;
+    font-weight: 200;
+    font-style: normal;
+    top: -25px; /* Adjust this value as needed */
 }
 .nav-menu{
     background-color:#71b9df;

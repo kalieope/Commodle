@@ -5,7 +5,6 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: 'Lato', sans-serif;
 }
 
 .home, .reviews, .favorites, .about, .LoginSignup, .account{
@@ -77,32 +76,6 @@ code {
   background: none;
   border: none;
   cursor: pointer;
-}
-
-#geocoder-container {
-  position: absolute;
-  top: 50%; 
-  left: 50%; 
-  transform: translate(-50%, -50%); 
-  z-index: 10; 
-  width: 300px; 
-  background-color: white; 
-  padding: 8px;
-  border-radius: 4px;
-}
-
-#geocoder-container{
-  position: absolute;
-  top:50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 10;
-  width: 300px;
-  height: auto;
-  min-height: 40px;
-  border-radius: 8px;
-  overflow: visible;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .mapboxgl-ctrl-geocoder {
